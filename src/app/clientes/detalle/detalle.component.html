@@ -1,30 +1,77 @@
-<div class="card bg-dark text-white">
-  <div class="card-header text-center">{{titulo}}</div>
-  <div class="card-body">
-    <div class="container">
-      <div class="row">
-        <div class="col-sm">
-          <ul *ngIf="cliente" class="list-group text-dark mb-3">
-            <li class="list-group-item">{{ cliente.nombre }}</li>
-            <li class="list-group-item">{{ cliente.apellido }}</li>
-            <li class="list-group-item">{{ cliente.email }}</li>
-            <li class="list-group-item">{{ cliente.createAt | date: 'fullDate' }}</li>
-          </ul>
-          <div class="input-group">
-            <!--      <label class="input-group-text" for="subirFoto">Seleccionar foto</label>-->
-            <input (change)="seleccionarFoto($event)" type="file" class="form-control" id="subirFoto" aria-describedby="inputGroupFileAddon04" aria-label="Upload">
-            <button (click)="subirFoto()" [disabled]="!fotoSeleccionada" class="btn btn-outline-secondary" type="button" id="inputGroupFileAddon04">Subir</button>
-          </div>
-          <div *ngIf="progress > 0" class="progress mt-5" style="height: 40px;">
-            <div class="progress-bar progress-bar-striped" role="progressbar" [ngStyle]="{'width': progress + '%' }" [attr.aria-valuenow]="progress" aria-valuemin="0" aria-valuemax="100">
-              {{ progress }}%
+<!--<div class="card bg-dark text-white">-->
+<!--  <div class="card-header text-center">{{titulo}}</div>-->
+<!--  <div class="card-body">-->
+<!--&lt;!&ndash;    <div class="container">&ndash;&gt;-->
+<!--&lt;!&ndash;      <div class="row">&ndash;&gt;-->
+<!--&lt;!&ndash;        <div class="col-sm">&ndash;&gt;-->
+<!--&lt;!&ndash;          <ul *ngIf="cliente" class="list-group text-dark mb-3">&ndash;&gt;-->
+<!--&lt;!&ndash;            <li class="list-group-item">{{ cliente.nombre }}</li>&ndash;&gt;-->
+<!--&lt;!&ndash;            <li class="list-group-item">{{ cliente.apellido }}</li>&ndash;&gt;-->
+<!--&lt;!&ndash;            <li class="list-group-item">{{ cliente.email }}</li>&ndash;&gt;-->
+<!--&lt;!&ndash;            <li class="list-group-item">{{ cliente.createAt | date: 'fullDate' }}</li>&ndash;&gt;-->
+<!--&lt;!&ndash;          </ul>&ndash;&gt;-->
+<!--&lt;!&ndash;          <div class="input-group">&ndash;&gt;-->
+<!--&lt;!&ndash;            &lt;!&ndash;      <label class="input-group-text" for="subirFoto">Seleccionar foto</label>&ndash;&gt;&ndash;&gt;-->
+<!--&lt;!&ndash;            <input (change)="seleccionarFoto($event)" type="file" class="form-control" id="subirFoto" aria-describedby="inputGroupFileAddon04" aria-label="Upload">&ndash;&gt;-->
+<!--&lt;!&ndash;            <button (click)="subirFoto()" [disabled]="!fotoSeleccionada" class="btn btn-outline-secondary" type="button" id="inputGroupFileAddon04">Subir</button>&ndash;&gt;-->
+<!--&lt;!&ndash;          </div>&ndash;&gt;-->
+<!--&lt;!&ndash;          <div *ngIf="progress > 0" class="progress mt-5" style="height: 40px;">&ndash;&gt;-->
+<!--&lt;!&ndash;            <div class="progress-bar progress-bar-striped" role="progressbar" [ngStyle]="{'width': progress + '%' }" [attr.aria-valuenow]="progress" aria-valuemin="0" aria-valuemax="100">&ndash;&gt;-->
+<!--&lt;!&ndash;              {{ progress }}%&ndash;&gt;-->
+<!--&lt;!&ndash;            </div>&ndash;&gt;-->
+<!--&lt;!&ndash;          </div>&ndash;&gt;-->
+<!--&lt;!&ndash;        </div>&ndash;&gt;-->
+<!--&lt;!&ndash;        <div class="col-sm">&ndash;&gt;-->
+<!--&lt;!&ndash;          <img *ngIf="cliente?.foto" src="http://localhost:8080/api/uploads/img/{{ cliente.foto }}" alt="fotoCLiente" class="img-thumbnail rounded">&ndash;&gt;-->
+<!--&lt;!&ndash;        </div>&ndash;&gt;-->
+<!--&lt;!&ndash;      </div>&ndash;&gt;-->
+<!--&lt;!&ndash;    </div>&ndash;&gt;-->
+<!--  </div>-->
+<!--</div>-->
+
+
+<div *ngIf="modalService.modal" class="modal" tabindex="-1" style="display:block;">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title"> {{titulo}} </h5>
+        <button (click)="closeModal()" type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+
+        <div class="container">
+          <div class="row">
+            <div class="col-sm">
+              <ul *ngIf="cliente" class="list-group text-dark mb-3">
+                <li class="list-group-item">{{ cliente.nombre }}</li>
+                <li class="list-group-item">{{ cliente.apellido }}</li>
+                <li class="list-group-item">{{ cliente.email }}</li>
+                <li class="list-group-item">{{ cliente.createAt }}</li>
+              </ul>
+              <div class="input-group">
+                <!--      <label class="input-group-text" for="subirFoto">Seleccionar foto</label>-->
+                <input (change)="seleccionarFoto($event)" type="file" class="form-control" id="subirFoto" aria-describedby="inputGroupFileAddon04" aria-label="Upload">
+                <button (click)="subirFoto()" [disabled]="!fotoSeleccionada" class="btn btn-outline-secondary" type="button" id="inputGroupFileAddon04">Subir</button>
+              </div>
+              <div *ngIf="progress > 0" class="progress mt-5" style="height: 40px;">
+                <div class="progress-bar progress-bar-striped" role="progressbar" [ngStyle]="{'width': progress + '%' }" [attr.aria-valuenow]="progress" aria-valuemin="0" aria-valuemax="100">
+                  {{ progress }}%
+                </div>
+              </div>
+            </div>
+            <div class="col-sm">
+              <img *ngIf="cliente?.foto" src="http://localhost:8080/api/uploads/img/{{ cliente.foto }}" alt="fotoCLiente" class="img-thumbnail rounded">
             </div>
           </div>
         </div>
-        <div class="col-sm">
-          <img *ngIf="cliente?.foto" src="http://localhost:8080/api/uploads/img/{{ cliente.foto }}" alt="fotoCLiente" class="img-thumbnail rounded">
-        </div>
+
+      </div>
+
+      <div class="modal-footer">
+        <button (click)="closeModal()" type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
       </div>
     </div>
   </div>
 </div>
+
+

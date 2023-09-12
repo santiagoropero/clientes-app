@@ -29,8 +29,7 @@ const routes: Routes = [
   { path: 'directiva', component: DirectivaComponent },
   { path: 'clientes/form', component: FormComponent },
   { path: 'clientes/form/:idCliente', component: FormComponent },
-  { path: 'clientes/page/:page', component: ClientesComponent },
-  { path: 'clientes/ver/:idCliente', component: DetalleComponent },
+  { path: 'clientes/page/:page', component: ClientesComponent }
 ];
 
 registerLocaleData(localeES, 'es');

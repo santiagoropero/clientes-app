@@ -1,9 +1,10 @@
-import {Component, OnInit} from '@angular/core';
-import {Cliente} from '../cliente';
-import {ClienteService} from '../cliente.service';
-import {ActivatedRoute} from '@angular/router';
+import { Component, Input, OnInit } from '@angular/core';
+import { Cliente} from '../cliente';
+import { ClienteService } from '../cliente.service';
+import { ActivatedRoute } from '@angular/router';
 import swal from 'sweetalert2';
-import {HttpEventType} from '@angular/common/http';
+import { HttpEventType } from '@angular/common/http';
+import { ModalService } from './modal.service';
 
 @Component({
   selector: 'app-detalle',
@@ -11,22 +12,24 @@ import {HttpEventType} from '@angular/common/http';
   styleUrls: ['./detalle.component.css']
 })
 export class DetalleComponent implements OnInit {
-  cliente: Cliente;
+  @Input() cliente: Cliente;
   titulo = 'Detalle del cliente';
   fotoSeleccionada: File;
   progress = 0;
   constructor(private clienteService: ClienteService,
-              private activeRoute: ActivatedRoute) { }
+              public modalService: ModalService) {
+  }
 
   ngOnInit(): void {
-    this.activeRoute.paramMap.subscribe(
-      params => {
-        const id = + params.get('idCliente');
-        if (id) {
-          this.clienteService.getCLiente(id).subscribe(cliente => this.cliente = cliente);
-        }
-      }
-    );
+    // Obtener el id por la ruta
+    // this.activeRoute.paramMap.subscribe(
+    //   params => {
+    //     const id = + params.get('idCliente');
+    //     if (id) {
+    //       this.clienteService.getCLiente(id).subscribe(cliente => this.cliente = cliente);
+    //     }
+    //   }
+    // );
   }
 
   // tslint:disable-next-line:typedef
@@ -70,4 +73,11 @@ export class DetalleComponent implements OnInit {
           }
       });
     }}
+
+
+  closeModal(): void {
+    this.modalService.closeModal();
+    this.fotoSeleccionada = null;
+    this.progress = 0;
+  }
 }
