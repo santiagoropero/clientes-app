@@ -39,14 +39,25 @@
         <input id="email" name="email" type="text" [(ngModel)]="cliente.email" class="form-control">
         </div>
       </div>
+
       <br>
+
       <div class="form-group">
         <div class="col-4">
           <label for="apellido">Fecha :</label>
           <input matInput [matDatepicker]="picker" id="createAt" name="createAt" [(ngModel)]="cliente.createAt" class="form-control" style="display: inline; width: 300px;">
           <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
           <mat-datepicker #picker></mat-datepicker>
-<!--          <input id="createAt" name="createAt" type="date" [(ngModel)]="cliente.createAt" class="form-control">-->
+        </div>
+      </div>
+
+      <div class="form-group">
+        <div class="col-4">
+          <label for="region">Region :</label>
+          <select  id="region" [compareWith]="compararRegion" name="region" [(ngModel)]="cliente.region" [value]="cliente.region?.id" class="form-control" style="display: inline; width: 400px;">
+            <option value="undefined">Seleccionar región</option>
+            <option *ngFor="let region of regiones">{{ region.nombre }}</option>
+          </select>
         </div>
       </div>
 

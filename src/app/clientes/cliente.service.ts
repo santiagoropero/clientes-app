@@ -1,12 +1,12 @@
 import { Injectable } from '@angular/core';
 import { Cliente } from './cliente';
 import { Observable, throwError } from 'rxjs';
-import {HttpClient, HttpEvent, HttpHeaders, HttpRequest} from '@angular/common/http';
+import {HttpClient, HttpEvent, HttpRequest} from '@angular/common/http';
 import {catchError, map, tap} from 'rxjs/operators';
-import swal from 'sweetalert2';
 import { Router } from '@angular/router';
 import {formatDate, registerLocaleData} from '@angular/common';
 import localeES from '@angular/common/locales/es';
+import { Region } from './region';
 
 
 @Injectable({
@@ -14,9 +14,9 @@ import localeES from '@angular/common/locales/es';
 })
 export class ClienteService {
   private urlEnpoint = 'http://localhost:8080/api/clientes';
-  private httpHeaders = new HttpHeaders({'Content-Type': 'Application/json'});
   constructor(private httpCliente: HttpClient,
               private router: Router) { }
+
 
   getClientes(page: number): Observable<any> {
     return this.httpCliente.get<Cliente[]>(this.urlEnpoint + '/page/' + page).pipe(
@@ -40,14 +40,12 @@ export class ClienteService {
   }
 
   create(cliente: Cliente): Observable<Cliente> {
-    return this.httpCliente.post(this.urlEnpoint, cliente, {headers: this.httpHeaders}).pipe(
+    return this.httpCliente.post(this.urlEnpoint, cliente).pipe(
       map((response: any) => response.cliente as Cliente),
       catchError(e => {
-        swal.fire({
-         title: 'Error al crear el cliente',
-          text: e.error.mensaje,
-          icon: 'error'
-        });
+        if (e.error.mensaje) {
+          console.log('Error', e.error.mensaje);
+        }
         return throwError(e);
       })
     );
@@ -56,40 +54,33 @@ export class ClienteService {
   getCLiente(idCliente: number): Observable<Cliente> {
     return this.httpCliente.get<Cliente>(`${this.urlEnpoint}/${idCliente}`).pipe(
       catchError(e => {
-        this.router.navigate(['/clientes']);
-        console.log('Error', e.error.mensaje);
-        swal.fire({
-          title: 'Error al buscar el cliente',
-          text: e.error.mensaje,
-          icon: 'error'
-        });
+        if (e.status != 401 && e.error.mensaje) {
+          this.router.navigate(['/clientes']);
+          console.log('Error', e.error.mensaje);
+        }
         return throwError(e);
       })
     );
   }
 
   update(cliente: Cliente): Observable<Cliente> {
-    return this.httpCliente.put(`${this.urlEnpoint}/${cliente.id}`, cliente, {headers: this.httpHeaders}).pipe(
+    return this.httpCliente.put(`${this.urlEnpoint}/${cliente.id}`, cliente).pipe(
       map((response: any) => response.cliente as Cliente),
       catchError(e => {
-        swal.fire({
-          title: 'Error al actualizar el cliente',
-          text: e.error.mensaje,
-          icon: 'error'
-        });
+        if (e.error.mensaje) {
+          console.log('Error', e.error.mensaje);
+        }
         return throwError(e);
       })
     );
   }
 
   delete(idCLiente: number): Observable<Cliente> {
-    return this.httpCliente.delete<Cliente>(`${this.urlEnpoint}/${idCLiente}`, {headers: this.httpHeaders}).pipe(
+    return this.httpCliente.delete<Cliente>(`${this.urlEnpoint}/${idCLiente}`).pipe(
       catchError(e => {
-        swal.fire({
-          title: 'Error al eliminar el cliente',
-          text: e.error.mensaje,
-          icon: 'error'
-        });
+        if (e.error.mensaje) {
+          console.log('Error', e.error.mensaje);
+        }
         return throwError(e);
       })
     );
@@ -113,6 +104,11 @@ export class ClienteService {
       //     return throwError(e);
       //   })
       // ));
+  }
+
+
+  getRegiones(): Observable<Region[]> {
+    return this.httpCliente.get<Region[]>(`${this.urlEnpoint}/regiones`);
   }
 
 }
